@@ -1,0 +1,37 @@
+package com.quicklyjava.dto;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+public class HibernateTest {
+
+	public static void main(String[] args) {
+		UserDetails user = new UserDetails();
+		user.setUserId(1);
+		user.setUserName("First User");
+		
+		Vehicle v = new Vehicle();
+		v.setVehicleName("My Car");
+		
+		user.setVehicle(v);
+	
+		SessionFactory sf = new Configuration().configure().buildSessionFactory();
+		Session session = sf.openSession();
+		session.beginTransaction();
+		session.save(user);
+		session.save(v);
+		session.getTransaction().commit();
+		session.close();
+		
+		user = null;
+		
+		session = sf.openSession();
+		session.beginTransaction();
+		user = (UserDetails) session.get(UserDetails.class, 1);
+		session.clear();
+		System.out.println(user.getUserName());
+		session.close();
+	}
+
+}
